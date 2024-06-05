@@ -1,5 +1,7 @@
 import moongoose from "mongoose";
 
+import bcrypt from "bcryptjs";
+
 const userSchema = new moongoose.Schema(
   {
     name: {
@@ -39,4 +41,12 @@ const userSchema = new moongoose.Schema(
   { timestamps: true }
 );
 
-export const User = mongoose.model("Users", userSchema);
+userSchema.pre("save", async function () {
+  this.password = await bcrypt.hash(this.password, 10);
+});
+
+userSchema.methods.comparePassword = async function (plainPassword) {
+  return await bcrypt.compare(plainPassword, this.password);
+};
+
+export const userModel = moongoose.model("Users", userSchema);
