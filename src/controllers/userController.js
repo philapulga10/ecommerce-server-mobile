@@ -82,10 +82,13 @@ export const loginController = async (req, res) => {
       });
     }
 
+    const token = user.generateToken();
+
     res.status(200).send({
       success: true,
       message: "Login successfully",
       user,
+      token,
     });
   } catch (error) {
     console.log(error);
